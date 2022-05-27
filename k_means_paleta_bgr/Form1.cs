@@ -26,11 +26,11 @@ namespace k_means_paleta_bgr
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            bmp = new Bitmap(@"C:\facial_detection_project\k_means_paleta_bgr\k_means_paleta_bgr\china.jpg");
+            bmp = new Bitmap(@"C:\facial_detection_project\k_means_paleta_bgr\k_means_paleta_bgr\norge_1.jpg");
             g = Graphics.FromImage(bmp);
             picture.Image = bmp;
             picture.SizeMode = PictureBoxSizeMode.StretchImage;
-            
+
         }
 
         private void label3_Click(object sender, EventArgs e)
@@ -66,7 +66,7 @@ namespace k_means_paleta_bgr
             palete10.BackColor = Color.FromArgb(colors[9][0], colors[9][1], colors[9][2]);
             palete11.BackColor = Color.FromArgb(colors[10][0], colors[10][1], colors[10][2]);
             palete12.BackColor = Color.FromArgb(colors[11][0], colors[11][1], colors[11][2]);
-            cor1.Text = $"{colors[0][0]}, {colors[0][1]}, {colors[0][2]}";
+            cor1.Text = $"{ colors[0][0]}, {colors[0][1]}, {colors[0][2]}";
             cor2.Text = $"{colors[1][0]}, {colors[1][1]}, {colors[1][2]}";
             cor3.Text = $"{colors[2][0]}, {colors[2][1]}, {colors[2][2]}";
             cor4.Text = $"{colors[3][0]}, {colors[3][1]}, {colors[3][2]}";
@@ -78,6 +78,7 @@ namespace k_means_paleta_bgr
             cor10.Text = $"{colors[9][0]}, {colors[9][1]}, {colors[9][2]}";
             cor11.Text = $"{colors[10][0]}, {colors[10][1]}, {colors[10][2]}";
             cor12.Text = $"{colors[11][0]}, {colors[11][1]}, {colors[11][2]}";
+            Console.WriteLine();
         }
     }
 }

@@ -18,9 +18,9 @@ namespace k_means_paleta_bgr.Classes
             double minorDist = 1000.0;
             int cluster = 0;
 
-            double x = 0;
-            double y = 0;
-            double z = 0;
+            double blue = 0;
+            double green = 0;
+            double red = 0;
 
             #endregion
             for (int i = 0; i < k; i++)
@@ -30,7 +30,7 @@ namespace k_means_paleta_bgr.Classes
             }
 
             // aqui sao as iteracoes
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 60; i++)
             {
                 for (int j = 0; j < list.Count; j++)
                 //preciso calcular distancia entre o pixel e o nucleo
@@ -56,26 +56,27 @@ namespace k_means_paleta_bgr.Classes
 
                 for (int m = 0; m < listClusters.Count; m++)
                 {
-                    x = 0;
-                    y = 0;
-                    z = 0;
+                    blue = 0;
+                    green = 0;
+                    red = 0;
                     foreach (int[] pixel in listClusters[m])
                     {
-                        x += pixel[0];
-                        y += pixel[1];
-                        z += pixel[2];
+                        blue += pixel[0];
+                        green += pixel[1];
+                        red += pixel[2];
                     }
                     if (listClusters[m].Count > 0)
                     {
-                        x /= listClusters[m].Count;
-                        y /= listClusters[m].Count;
-                        z /= listClusters[m].Count;
-                        colors[m] = new int[] { (int)(x), (int)(y), (int)(z) };
+                        blue /= listClusters[m].Count;
+                        green /= listClusters[m].Count;
+                        red /= listClusters[m].Count;
+                        colors[m] = new int[] { (int)(red), (int)(green), (int)(blue) };
                     }
                     else
-                    {
+                    { 
                         colors[m] = new int[] { 255, 255, 255 };
                     }
+                    listClusters[m].Clear();
 
                 }
             }
