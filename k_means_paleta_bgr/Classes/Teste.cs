@@ -18,12 +18,14 @@ namespace k_means_paleta_bgr.Classes
         public int greenAverage { get; set; }
         public int redAverage { get; set; }
 
+        public List<int[]> pixelsArray { get; set; } = new List<int[]>();
+
 
         public Teste(Bitmap bmp)
         {
             _bmp = bmp;
             byteArrayMontage();
-
+            pixelArrayMontage();
         }
 
         public void byteArrayMontage()
@@ -53,6 +55,15 @@ namespace k_means_paleta_bgr.Classes
             greenAverage = (int)(greenSum / qtdPixel);
             redAverage = (int)(redSum / qtdPixel);
 
+        }
+
+        public void pixelArrayMontage()
+        {
+            for (int i = 0; i < byteArray.Length; i += 3)
+            {
+                int[] x = { byteArray[i + 0], byteArray[i + 1], byteArray[i + 2] };
+                pixelsArray.Add(x);
+            }
         }
     }
 }
