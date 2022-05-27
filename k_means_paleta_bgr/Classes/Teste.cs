@@ -61,7 +61,8 @@ namespace k_means_paleta_bgr.Classes
         {
             for (int i = 0; i < byteArray.Length; i += 3)
             {
-                int[] pixel = { byteArray[i + 0], byteArray[i + 1], byteArray[i + 2] };
+                // Red, Green, Blue
+                int[] pixel = { byteArray[i + 2], byteArray[i + 1], byteArray[i + 0] };
                 pixelsArray.Add(pixel);
             }
         }
