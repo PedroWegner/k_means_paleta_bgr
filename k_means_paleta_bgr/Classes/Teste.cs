@@ -18,14 +18,14 @@ namespace k_means_paleta_bgr.Classes
         public int greenAverage { get; set; }
         public int redAverage { get; set; }
 
-        public List<int[]> pixelsArray { get; set; } = new List<int[]>();
+        public int imgHeight {get;set;}
+        public int imgStride {get;set;}
 
 
         public Teste(Bitmap bmp)
         {
             _bmp = bmp;
             byteArrayMontage();
-            pixelArrayMontage();
         }
 
         public void byteArrayMontage()
@@ -33,6 +33,8 @@ namespace k_means_paleta_bgr.Classes
             var rect = new Rectangle(0, 0, _bmp.Width, _bmp.Height);
             var data = _bmp.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
             byteArray = new byte[data.Height * data.Stride];
+            imgHeight = data.Height;
+            imgStride = data.Stride;
             Marshal.Copy(data.Scan0, byteArray, 0, byteArray.Length);
             BGRAverage();
             _bmp.UnlockBits(data);
@@ -55,15 +57,6 @@ namespace k_means_paleta_bgr.Classes
             greenAverage = (int)(greenSum / qtdPixel);
             redAverage = (int)(redSum / qtdPixel);
 
-        }
-
-        public void pixelArrayMontage()
-        {
-            for (int i = 0; i < byteArray.Length; i += 3)
-            {
-                int[] pixel = { byteArray[i + 0], byteArray[i + 1], byteArray[i + 2] };
-                pixelsArray.Add(pixel);
-            }
         }
     }
 }

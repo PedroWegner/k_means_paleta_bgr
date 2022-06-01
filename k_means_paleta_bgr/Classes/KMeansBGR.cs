@@ -9,78 +9,101 @@ namespace k_means_paleta_bgr.Classes
 {
     internal class KMeansBGR
     {
-        public List<int[]> clu(List<int[]> list, int k)
+        public List<Color> Cluterize(byte[] pixels, int k, int height, int stride)
         {
             #region Variables
-            List<int[]> colors = new List<int[]>();
+            List<Color> colors = new List<Color>();
             Random random = new Random();
-            List<List<int[]>> listClusters = new List<List<int[]>>();
-            double minorDist = 1000.0;
-            int cluster = 0;
 
             double blue = 0;
             double green = 0;
             double red = 0;
 
+            List<long> countCluster = new List<long>();
+            List<long> blueSum = new List<long>();
+            List<long> greenSum = new List<long>();
+            List<long> redSum = new List<long>();
+
             #endregion
             for (int i = 0; i < k; i++)
             {
-                colors.Add(new int[] { random.Next(255), random.Next(255), random.Next(255) });
-                listClusters.Add(new List<int[]>());
+                colors.Add(Color.FromArgb(random.Next(255), random.Next(255), random.Next(255)));
+                countCluster.Add(0);
+                redSum.Add(0);
+                greenSum.Add(0);
+                blueSum.Add(0);
             }
+            int threads = 32;
 
             // aqui sao as iteracoes
-            for (int i = 0; i < 60; i++)
+            for (int it = 0; it < 500; it++)
             {
-                for (int j = 0; j < list.Count; j++)
-                //preciso calcular distancia entre o pixel e o nucleo
+                Parallel.For(0, threads, j =>
                 {
-                    minorDist = 1000.0;
-                    for (int c = 0; c < colors.Count; c++)
-                    {
-                        double dist = Math.Sqrt(
-                            Math.Pow((list[j][0] - colors[c][0]), 2) +
-                            Math.Pow((list[j][1] - colors[c][1]), 2) +
-                            Math.Pow((list[j][2] - colors[c][2]), 2)
-                            );
 
-                        if (dist < minorDist)
+                    #region ThreadLocalVariables
+                    Random r = new Random();
+                    long[] count = new long[k];
+                    long[] redsum = new long[k];
+                    long[] greensum = new long[k];
+                    long[] bluesum = new long[k];
+                    double minorDist = double.MaxValue;
+                    Color[] array = new Color[k];
+                    colors.CopyTo(array);
+                    int cluster = 0;
+                    #endregion
+                    for (int i = j * stride * height / threads; i < (j + 1) * stride * height / threads; 
+                        i += 3 * r.Next(1, 11))
+                    {
+                        minorDist = double.MaxValue;
+                        for (int c = 0; c < k; c++)
                         {
-                            minorDist = dist;
-                            cluster = c;
-
+                            double db = pixels[i + 0] - array[c].B;
+                            double dg = pixels[i + 1] - array[c].G;
+                            double dr = pixels[i + 2] - array[c].R;
+                            double dist = (dr * dr) + (dg * dg) + (db * db);
+                            if (dist < minorDist)
+                            {
+                                minorDist = dist;
+                                cluster = c;
+                            }
                         }
-                    }
-                    listClusters[cluster].Add(list[j]);
-                }
 
-                for (int m = 0; m < listClusters.Count; m++)
-                {
-                    blue = 0;
-                    green = 0;
-                    red = 0;
-                    foreach (int[] pixel in listClusters[m])
-                    {
-                        blue += pixel[0];
-                        green += pixel[1];
-                        red += pixel[2];
+                        count[cluster]++;
+                        redsum[cluster] += pixels[i + 0];
+                        greensum[cluster] += pixels[i + 1];
+                        bluesum[cluster] += pixels[i + 2];
                     }
-                    if (listClusters[m].Count > 0)
+                    for (int i = 0; i < k; i++)
                     {
-                        blue /= listClusters[m].Count;
-                        green /= listClusters[m].Count;
-                        red /= listClusters[m].Count;
-                        colors[m] = new int[] { (int)(red), (int)(green), (int)(blue) };
+                        countCluster[i] += count[i];
+                        redSum[i] += redsum[i];
+                        greenSum[i] += greensum[i];
+                        blueSum[i] += bluesum[i];
+                    }
+                });
+                // esse for recalcula o cetroide do cluster
+                for (int n = 0; n < countCluster.Count; n++)
+                {
+                    if (countCluster[n] > 0)
+                    {
+                        red = redSum[n] / countCluster[n]; // (179+169+189+36) / 4
+                        green = greenSum[n] / countCluster[n];
+                        blue = blueSum[n] / countCluster[n];
+                        colors[n] = Color.FromArgb((byte)red, (byte)green, (byte)blue);
                     }
                     else
-                    { 
-                        colors[m] = new int[] { 255, 255, 255 };
+                    {
+                        colors[n] = Color.White;
                     }
-                    listClusters[m].Clear();
-
+                    countCluster[n] = 0;
+                    redSum[n] = 0;
+                    greenSum[n] = 0;
+                    blueSum[n] = 0;
                 }
             }
+
             return colors;
-        } 
+        }
     }
 }
