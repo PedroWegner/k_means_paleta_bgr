@@ -70,9 +70,9 @@ namespace k_means_paleta_bgr.Classes
                         }
 
                         count[cluster]++;
-                        redsum[cluster] += pixels[i + 0];
+                        bluesum[cluster] += pixels[i + 0];
                         greensum[cluster] += pixels[i + 1];
-                        bluesum[cluster] += pixels[i + 2];
+                        redsum[cluster] += pixels[i + 2];
                     }
                     for (int i = 0; i < k; i++)
                     {
